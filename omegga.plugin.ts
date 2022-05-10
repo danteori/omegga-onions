@@ -23,7 +23,9 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
     this.omegga.on('interact', (interaction: BrickInteraction) => {
       if(interaction.message == 'killUser'){
-        this.omegga.findPlayerByName(interaction.player.name).kill();
+        let player = this.omegga.findPlayerByName(interaction.player.name);
+        player.kill();
+        Omegga.middlePrint(player.name, "<emoji>dead</>");
       }
     });
 
