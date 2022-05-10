@@ -1,4 +1,5 @@
 import OmeggaPlugin, { OL, PS, PC } from 'omegga';
+import { BrickInteraction } from '../omegga-test/omegga';
 
 type Config = { foo: string };
 type Storage = { bar: string };
@@ -18,6 +19,12 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     // Write your plugin!
     this.omegga.on('cmd:test', (speaker: string) => {
       this.omegga.broadcast(`Hello, ${speaker}!`);
+    });
+
+    this.omegga.on('interact', (interaction: BrickInteraction) => {
+      if(interaction.message == 'killUser'){
+        this.omegga.findPlayerByName(interaction.player.name).kill();
+      }
     });
 
     return { registeredCommands: ['test'] };
