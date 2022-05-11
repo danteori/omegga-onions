@@ -25,7 +25,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     // Write your plugin!
     this.omegga.on('cmd:count', async (speaker: string, target: string) => {
       let player = Omegga.findPlayerByName(target);
-      Omegga.middlePrint(speaker, `${player.name} has ${await this.getCoins(player.id)} coins.`);
+      Omegga.whisper(speaker, `${player.name} has ${await this.getCoins(player.id)} coins.`);
       
     });
 
@@ -40,12 +40,14 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       if(source.isHost()){
         let destination = Omegga.findPlayerByName(target);
         let num = parseInt(quantity);
-        if(isNaN(num)){
-          Omegga.middlePrint(source, `${num} is not a valid integer.`);
+        if(destination == null){
+          Omegga.whisper(source, `Could not find a player with name <color="ffff00">${destination}</>.`);
+        } else if(isNaN(num)){
+          Omegga.whisper(source, `<color="ffff00">${num}</> is not a valid integer.`);
         } else {
           await this.giveCoin(destination.id, num);
-          Omegga.middlePrint(source, `You have given <color="ffff00">${num} ${coinName}</> to <color="ffff00">${destination.name}</>.`);
-          Omegga.middlePrint(target, `You have received <color="ffff00">${num} ${coinName}</> from <color="ffff00">${source.name}</>.<br>You now have <color="ffff00">${await this.getCoins(destination.id)} ${coinName}</>.`);
+          Omegga.whisper(source, `You have given <color="ffff00">${num} ${coinName}</> to <color="ffff00">${destination.name}</>.`);
+          Omegga.whisper(target, `You have received <color="ffff00">${num} ${coinName}</> from <color="ffff00">${source.name}</>.<br>You now have <color="ffff00">${await this.getCoins(destination.id)} ${coinName}</>.`);
         }
       }
     });
@@ -55,7 +57,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       if(interaction.message == 'killUser'){
         let player = this.omegga.findPlayerByName(interaction.player.name);
         player.kill();
-        Omegga.middlePrint(player.name, "<emoji>dead</>");
+        Omegga.whisper(player, "<emoji>dead</>");
       }
     });
 
