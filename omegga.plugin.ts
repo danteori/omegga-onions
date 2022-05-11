@@ -18,7 +18,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
   async init() {
 
-    const coinName: string = 'Onion Coin';
+    const coinName: string = 'Onioncoin';
 
     this.omegga.on
 
@@ -44,7 +44,8 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
           Omegga.middlePrint(source, `${num} is not a valid integer.`);
         } else {
           await this.giveCoin(destination.id, num);
-          Omegga.middlePrint(source, `You have given ${destination.name} ${coinName} x${num}.`);
+          Omegga.middlePrint(source, `You have given <color="ffff00">${num} ${coinName}</> to <color="ffff00">${destination.name}</>.`);
+          Omegga.middlePrint(target, `You have received <color="ffff00">${num} ${coinName}</> from <color="ffff00">${source.name}</>.<br>You now have <color="ffff00">${await this.getCoins(destination.id)} ${coinName}</>.`);
         }
       }
     });
