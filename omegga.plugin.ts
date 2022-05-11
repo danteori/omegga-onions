@@ -20,9 +20,9 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     const coinName: string = 'Onion Coin';
 
     // Write your plugin!
-    this.omegga.on('cmd:count', (speaker: string, target: string) => {
+    this.omegga.on('cmd:count', async (speaker: string, target: string) => {
       let player = Omegga.findPlayerByName(target);
-      Omegga.middlePrint(speaker, `${player.name} has ${getCoins(player.name)} coins.`);
+      Omegga.middlePrint(speaker, `${player.name} has ${await getCoins(player.name)} coins.`);
       
     });
 
@@ -32,7 +32,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     });
     */
 
-    this.omegga.on('cmd:givecoin', (speaker: string, target: string, quantity: string) => {
+    this.omegga.on('cmd:givecoin', async (speaker: string, target: string, quantity: string) => {
       let source = Omegga.findPlayerByName(speaker);
       if(source.isHost()){
         let destination = Omegga.findPlayerByName(target);
@@ -40,7 +40,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         if(isNaN(num)){
           Omegga.middlePrint(source, `${num} is not a valid integer.`);
         } else {
-          giveCoin(destination.name, num);
+          await giveCoin(destination.name, num);
           Omegga.middlePrint(source, `You have given ${destination.name} ${coinName} x${num}.`);
         }
       }
