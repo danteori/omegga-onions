@@ -41,7 +41,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         let destination = Omegga.findPlayerByName(target);
         let num = parseInt(quantity);
         if(destination == null){
-          Omegga.whisper(source, `Could not find a player with name <color="ffff00">${destination}</>.`);
+          Omegga.whisper(source, `Could not find a player with name <color="ffff00">${target}</>.`);
         } else if(isNaN(num)){
           Omegga.whisper(source, `<color="ffff00">${num}</> is not a valid integer.`);
         } else {
