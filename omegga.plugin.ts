@@ -2,7 +2,8 @@ import OmeggaPlugin, { OL, PS, PC } from 'omegga';
 import { BrickInteraction } from '../omegga-test/omegga';
 
 type Config = { foo: string };
-type Storage = { bar: string, coinstore: Map<string, number>};
+type Storage = { [key: string]: CoinData};
+type CoinData = { coins: number };
 
 export default class Plugin implements OmeggaPlugin<Config, Storage> {
   omegga: OL;
@@ -19,16 +20,12 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
     const coinName: string = 'Onion Coin';
 
-    this.omegga.on('start', async (info: {map: string;}) => {
-      let map = await this.store.get('coinstore');
-    });
-
     this.omegga.on
 
     // Write your plugin!
     this.omegga.on('cmd:count', async (speaker: string, target: string) => {
       let player = Omegga.findPlayerByName(target);
-      Omegga.middlePrint(speaker, `${player.name} has ${await getCoins(player.name)} coins.`);
+      Omegga.middlePrint(speaker, `${player.name} has ${await this.getCoins(player.id)} coins.`);
       
     });
 
@@ -46,7 +43,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
         if(isNaN(num)){
           Omegga.middlePrint(source, `${num} is not a valid integer.`);
         } else {
-          await giveCoin(destination.name, num);
+          await this.giveCoin(destination.id, num);
           Omegga.middlePrint(source, `You have given ${destination.name} ${coinName} x${num}.`);
         }
       }
@@ -61,35 +58,29 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       }
     });
 
-    async function giveCoin(target: string, quantity: number){
-      let data = await this.store.get('coinstore');
-      if(data == null){
-        data = new Map();
-      }
-      let total = quantity;
-      if(data.has(target)){
-        total += data.get(target);
-      }
-      data.set(target, total);
-      await this.store.set('coinstore', data);
-    }
-
-    async function getCoins(target: string){
-      let data = await this.store.get('coinstore');
-      if(data == null){
-        data = new Map();
-      }
-      if(data.has(target)){
-        return data.get(target);
-      } else {
-        return 0;
-      }
-    }
+    
 
     return { registeredCommands: ['count', 'givecoin'] };
   }
 
   async stop() {
     // Anything that needs to be cleaned up...
+  }
+
+  async giveCoin(target: string, quantity: number){
+    let data = await this.store.get('coins_' + target);
+    if(data == null){
+      data = {coins: 0};
+    }
+    data.coins += quantity;
+    await this.store.set('coins_' + target, data);
+  }
+
+  async getCoins(target: string){
+    let data = await this.store.get('coins_' + target);
+    if(data == null){
+      data = {coins: 0};
+    }
+    return data.coins;
   }
 }
