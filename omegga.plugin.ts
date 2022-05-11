@@ -19,6 +19,12 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
     const coinName: string = 'Onion Coin';
 
+    this.omegga.on('start', async (info: {map: string;}) => {
+      let map = await this.store.get('coinstore');
+    });
+
+    this.omegga.on
+
     // Write your plugin!
     this.omegga.on('cmd:count', async (speaker: string, target: string) => {
       let player = Omegga.findPlayerByName(target);
@@ -57,6 +63,9 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
     async function giveCoin(target: string, quantity: number){
       let data = await this.store.get('coinstore');
+      if(data == null){
+        data = {};
+      }
       let total = quantity;
       if(data.has(target)){
         total += data.get(target);
@@ -67,6 +76,9 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
 
     async function getCoins(target: string){
       let data = await this.store.get('coinstore');
+      if(data == null){
+        data = {};
+      }
       if(data.has(target)){
         return data.get(target);
       } else {
