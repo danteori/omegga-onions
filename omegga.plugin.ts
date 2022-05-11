@@ -64,7 +64,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     async function giveCoin(target: string, quantity: number){
       let data = await this.store.get('coinstore');
       if(data == null){
-        data = {};
+        data = new Map();
       }
       let total = quantity;
       if(data.has(target)){
@@ -77,7 +77,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
     async function getCoins(target: string){
       let data = await this.store.get('coinstore');
       if(data == null){
-        data = {};
+        data = new Map();
       }
       if(data.has(target)){
         return data.get(target);
