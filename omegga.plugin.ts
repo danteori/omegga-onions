@@ -74,7 +74,7 @@ export default class Plugin implements OmeggaPlugin<Config, Storage> {
       }
     }
 
-    return { registeredCommands: ['test'] };
+    return { registeredCommands: ['count', 'givecoin'] };
   }
 
   async stop() {
